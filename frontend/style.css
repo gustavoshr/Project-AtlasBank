@@ -1,0 +1,423 @@
+/* ============================================
+   financeiro — design tokens
+   ============================================ */
+:root {
+  --bg-deep: #0A0F1E;
+  --bg-card: #1A2035;
+  --bg-card-hover: #212A45;
+  --accent: #00D4AA;
+  --accent-dim: rgba(0, 212, 170, 0.12);
+  --text-primary: #F5F5F0;
+  --text-secondary: #6B7A99;
+  --negative: #FF6B6B;
+  --negative-dim: rgba(255, 107, 107, 0.12);
+  --border: rgba(255, 255, 255, 0.06);
+ 
+  --font-display: "Space Grotesk", sans-serif;
+  --font-body: "Inter", sans-serif;
+}
+ 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+ 
+body {
+  background: var(--bg-deep);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+ 
+/* ============================================
+   Layout
+   ============================================ */
+.app {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  min-height: 100vh;
+}
+ 
+/* ============================================
+   Sidebar
+   ============================================ */
+.sidebar {
+  background: #0D1325;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 28px 20px;
+}
+ 
+.logo {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 36px;
+  letter-spacing: -0.02em;
+}
+ 
+.logo-dot {
+  color: var(--accent);
+}
+ 
+.nav-group {
+  margin-bottom: 28px;
+}
+ 
+.nav-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  padding: 0 12px;
+}
+ 
+.nav-item {
+  display: block;
+  padding: 10px 12px;
+  border-radius: 10px;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.92rem;
+  font-weight: 500;
+  margin-bottom: 2px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+ 
+.nav-item:hover {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+ 
+.nav-item.active {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+ 
+.sidebar-bottom {
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+}
+ 
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+ 
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #04261F;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+ 
+.user-name {
+  font-size: 0.88rem;
+  font-weight: 600;
+}
+ 
+.user-plan {
+  font-size: 0.76rem;
+  color: var(--text-secondary);
+}
+ 
+/* ============================================
+   Main
+   ============================================ */
+.main {
+  padding: 36px 44px;
+  max-width: 920px;
+}
+ 
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+ 
+.page-header h1 {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+ 
+.page-subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-top: 4px;
+}
+ 
+.select-conta {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  gap: 6px;
+}
+ 
+.select-conta select {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  padding: 9px 14px;
+  border-radius: 10px;
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+ 
+/* ============================================
+   Resumo cards
+   ============================================ */
+.extrato-resumo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+ 
+.resumo-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  animation: fadeUp 0.5s ease backwards;
+}
+ 
+.resumo-card:nth-child(2) { animation-delay: 0.06s; }
+.resumo-card:nth-child(3) { animation-delay: 0.12s; }
+ 
+.resumo-label {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+ 
+.resumo-valor {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+ 
+.resumo-card.entradas .resumo-valor { color: var(--accent); }
+.resumo-card.saidas .resumo-valor { color: var(--negative); }
+ 
+/* ============================================
+   Lista do extrato
+   ============================================ */
+.extrato-lista-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 8px;
+  animation: fadeUp 0.5s ease 0.18s backwards;
+}
+ 
+.extrato-lista-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 18px 12px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+ 
+.extrato-lista-header h2 {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+ 
+.filtros {
+  display: flex;
+  gap: 6px;
+  background: var(--bg-deep);
+  padding: 4px;
+  border-radius: 10px;
+}
+ 
+.filtro-btn {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 6px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+ 
+.filtro-btn:hover {
+  color: var(--text-primary);
+}
+ 
+.filtro-btn.active {
+  background: var(--accent);
+  color: #04261F;
+}
+ 
+.extrato-lista {
+  display: flex;
+  flex-direction: column;
+}
+ 
+.extrato-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-top: 1px solid var(--border);
+  animation: fadeUp 0.4s ease backwards;
+}
+ 
+.extrato-item-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+ 
+.extrato-icone {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+ 
+.extrato-icone.entrada {
+  background: var(--accent-dim);
+}
+ 
+.extrato-icone.saida {
+  background: var(--negative-dim);
+}
+ 
+.extrato-tipo {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+ 
+.extrato-data {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+ 
+.extrato-valor {
+  font-family: var(--font-display);
+  font-size: 0.98rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+ 
+.extrato-valor.entrada { color: var(--accent); }
+.extrato-valor.saida { color: var(--negative); }
+ 
+/* ============================================
+   Estados — loading / vazio / erro
+   ============================================ */
+.extrato-loading,
+.extrato-vazio,
+.extrato-erro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 20px;
+  gap: 14px;
+  color: var(--text-secondary);
+  font-size: 0.88rem;
+  text-align: center;
+}
+ 
+.spinner {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  animation: spin 0.8s linear infinite;
+}
+ 
+.retry-btn {
+  background: var(--accent-dim);
+  color: var(--accent);
+  border: none;
+  padding: 9px 18px;
+  border-radius: 9px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+ 
+.retry-btn:hover {
+  background: rgba(0, 212, 170, 0.2);
+}
+ 
+/* ============================================
+   Animações
+   ============================================ */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+ 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+ 
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+  }
+}
+ 
+/* ============================================
+   Responsivo
+   ============================================ */
+@media (max-width: 860px) {
+  .app {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    display: none;
+  }
+  .main {
+    padding: 24px;
+  }
+  .extrato-resumo {
+    grid-template-columns: 1fr;
+  }
+}

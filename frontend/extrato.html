@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extrato - Atlas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+  <div class="app">
+ 
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">Atlas</div>
+ 
+      <nav class="nav-group">
+        <p class="nav-label">Principal</p>
+        <a href="index.html" class="nav-item">Visão geral</a>
+        <a href="transferir.html" class="nav-item">Transferências</a>
+        <a href="movimentar.html" class="nav-item">Depositar</a>
+        <a href="extrato.html" class="nav-item">Extrato</a>
+
+      </nav>
+ 
+      <nav class="nav-group">
+        <p class="nav-label">Conta</p>
+        <a href="extrato.html" class="nav-item active">Extrato</a>
+        <a href="notificacoes.html" class="nav-item">Notificações</a>
+        <a href="configuracoes.html" class="nav-item">Configurações</a>
+      </nav>
+    </div>
+ 
+    <div class="sidebar-bottom">
+      <div class="user-card">
+        <div class="avatar" id="avatarIniciais">GS</div>
+        <div>
+          <p class="user-name" id="nomeUsuario">Usuário</p>
+          <p class="user-plan">Conta Free</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+ 
+  <!-- ===== MAIN ===== -->
+  <main class="main">
+ 
+    <header class="page-header">
+      <div>
+        <h1>Extrato</h1>
+        <p class="page-subtitle" id="dataAtual">Carregando data...</p>
+      </div>
+ 
+      <div class="header-actions">
+        <label class="select-conta">
+          Conta
+          <select id="contaSelect">
+            <option value="1">Agência 123 · Conta 456</option>
+          </select>
+        </label>
+      </div>
+    </header>
+ 
+    <!-- Resumo do período -->
+    <section class="extrato-resumo">
+      <div class="resumo-card entradas">
+        <span class="resumo-label">Entradas</span>
+        <span class="resumo-valor" id="totalEntradas">R$ 0,00</span>
+      </div>
+      <div class="resumo-card saidas">
+        <span class="resumo-label">Saídas</span>
+        <span class="resumo-valor" id="totalSaidas">R$ 0,00</span>
+      </div>
+      <div class="resumo-card saldo">
+        <span class="resumo-label">Saldo final</span>
+        <span class="resumo-valor" id="saldoFinal">R$ 0,00</span>
+      </div>
+    </section>
+ 
+    <!-- Lista do extrato -->
+    <section class="extrato-lista-wrap">
+      <div class="extrato-lista-header">
+        <h2>Movimentações</h2>
+        <div class="filtros">
+          <button class="filtro-btn active" data-filtro="todos">Todos</button>
+          <button class="filtro-btn" data-filtro="entrada">Entradas</button>
+          <button class="filtro-btn" data-filtro="saida">Saídas</button>
+        </div>
+      </div>
+ 
+      <div id="extratoLista" class="extrato-lista">
+        <!-- preenchido via JS -->
+        <div class="extrato-loading" id="loadingState">
+          <div class="spinner"></div>
+          <p>Carregando movimentações…</p>
+        </div>
+      </div>
+ 
+      <div class="extrato-vazio" id="vazioState" hidden>
+        <p>Nenhuma movimentação encontrada para esta conta ainda.</p>
+      </div>
+ 
+      <div class="extrato-erro" id="erroState" hidden>
+        <p id="erroMensagem">Não foi possível carregar o extrato.</p>
+        <button id="tentarNovamente" class="retry-btn">Tentar novamente</button>
+      </div>
+    </section>
+ 
+  </main>
+</div>
+ 
+<script src="extrato.js"></script>
+</body>
+</html>

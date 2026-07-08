@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Transferir — Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .form-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 32px;
+    max-width: 480px;
+    animation: fadeUp 0.4s ease backwards;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .form-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .form-input {
+    background: #0D1325;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 13px 16px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+
+  .form-input:focus {
+    border-color: var(--accent);
+  }
+
+  .form-input-valor {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  .form-input-valor::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.4;
+  }
+
+  .buscar-wrap {
+    display: flex;
+    gap: 8px;
+  }
+
+  .buscar-wrap .form-input {
+    flex: 1;
+  }
+
+  .btn-buscar {
+    background: var(--accent-dim);
+    color: var(--accent);
+    border: none;
+    border-radius: 10px;
+    padding: 0 18px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s ease;
+  }
+
+  .btn-buscar:hover {
+    background: rgba(0, 212, 170, 0.2);
+  }
+
+  /* Card de confirmação do titular encontrado */
+  .titular-card {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    background: var(--accent-dim);
+    border: 1px solid rgba(0, 212, 170, 0.2);
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: -8px;
+    margin-bottom: 20px;
+    animation: fadeUp 0.3s ease;
+  }
+
+  .titular-card.visivel {
+    display: flex;
+  }
+
+  .titular-avatar {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #04261F;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 0.78rem;
+    flex-shrink: 0;
+  }
+
+  .titular-nome {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  .titular-sub {
+    font-size: 0.76rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  .titular-nao-encontrado {
+    display: none;
+    background: var(--negative-dim);
+    border: 1px solid rgba(255, 107, 107, 0.2);
+    border-radius: 10px;
+    padding: 11px 16px;
+    font-size: 0.85rem;
+    color: var(--negative);
+    margin-top: -8px;
+    margin-bottom: 20px;
+  }
+
+  .titular-nao-encontrado.visivel {
+    display: block;
+  }
+
+  .saldo-disponivel {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+  }
+
+  .saldo-disponivel span {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 24px 0;
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    background: var(--accent);
+    color: #04261F;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s ease, transform 0.1s ease;
+  }
+
+  .btn-submit:active { transform: scale(0.98); }
+
+  .btn-submit:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .feedback {
+    margin-top: 16px;
+    padding: 13px 16px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    display: none;
+  }
+
+  .feedback.sucesso {
+    background: var(--accent-dim);
+    color: var(--accent);
+    display: block;
+  }
+
+  .feedback.erro {
+    background: var(--negative-dim);
+    color: var(--negative);
+    display: block;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">Atlas</div>
+      <nav class="nav-group">
+        <p class="nav-label">Principal</p>
+        <a href="index.html" class="nav-item">Visão geral</a>
+        <a href="transferir.html" class="nav-item active">Transferências</a>
+        <a href="movimentar.html" class="nav-item">Depositar</a>
+        <a href="extrato.html" class="nav-item">Extrato</a>
+      </nav>
+      <nav class="nav-group">
+        <p class="nav-label">Conta</p>
+        <a href="extrato.html" class="nav-item">Extrato</a>
+        <a href="notificacoes.html" class="nav-item">Notificações</a>
+        <a href="configuracoes.html" class="nav-item">Configurações</a>
+      </nav>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="user-card">
+        <div class="avatar">GS</div>
+        <div>
+          <p class="user-name">Gustavo</p>
+          <p class="user-plan">Conta Free</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <header class="page-header">
+      <div>
+        <h1>Transferência</h1>
+        <p class="page-subtitle" id="dataAtual"></p>
+      </div>
+    </header>
+
+    <div class="form-card">
+
+      <!-- Conta origem -->
+      <div class="form-group">
+        <label class="form-label">Conta de origem</label>
+        <select class="form-input" id="contaOrigemSelect">
+          <option value="1">Agência 123 · Conta 456</option>
+        </select>
+      </div>
+
+      <p class="saldo-disponivel">Saldo disponível: <span id="saldoDisponivel">carregando…</span></p>
+
+      <hr class="divider">
+
+      <!-- Conta destino — digitar número -->
+      <div class="form-group">
+        <label class="form-label">Número da conta destino</label>
+        <div class="buscar-wrap">
+          <input
+            type="number"
+            class="form-input"
+            id="inputNumeroConta"
+            placeholder="Ex: 789"
+          />
+          <button class="btn-buscar" onclick="buscarContaDestino()">Buscar</button>
+        </div>
+      </div>
+
+      <!-- Titular encontrado -->
+      <div class="titular-card" id="titularCard">
+        <div class="titular-avatar" id="titularAvatar">--</div>
+        <div>
+          <p class="titular-nome" id="titularNome">—</p>
+          <p class="titular-sub">Titular da conta encontrado</p>
+        </div>
+      </div>
+
+      <!-- Conta não encontrada -->
+      <div class="titular-nao-encontrado" id="titularNaoEncontrado">
+        Conta não encontrada. Verifique o número e tente novamente.
+      </div>
+
+      <hr class="divider">
+
+      <!-- Valor -->
+      <div class="form-group">
+        <label class="form-label">Valor da transferência</label>
+        <input
+          type="number"
+          class="form-input form-input-valor"
+          id="inputValor"
+          placeholder="0,00"
+          min="0.01"
+          step="0.01"
+        />
+      </div>
+
+      <button class="btn-submit" id="btnSubmit" onclick="executarTransferencia()" disabled>
+        Transferir agora
+      </button>
+
+      <div class="feedback" id="feedback"></div>
+
+    </div>
+
+  </main>
+</div>
+
+<script src="transferir.js"></script>
+</body>
+</html>

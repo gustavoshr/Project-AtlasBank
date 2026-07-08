@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visão Geral — Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+
+  /* ── Cabeçalho da página ── */
+  .dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .dash-saudacao h1 {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+
+  .dash-saudacao p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-top: 4px;
+  }
+
+  .dash-acoes {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .acao-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+
+  .acao-btn:hover {
+    background: var(--bg-card-hover);
+    border-color: rgba(255,255,255,0.12);
+  }
+
+  /* ── Card de saldo ── */
+  .saldo-card {
+    background: linear-gradient(135deg, #0F1A3A 0%, #0A1628 60%, #061020 100%);
+    border: 1px solid rgba(0, 212, 170, 0.15);
+    border-radius: 20px;
+    padding: 32px;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.4s ease backwards;
+  }
+
+  /* círculo decorativo */
+  .saldo-card::after {
+    content: "";
+    position: absolute;
+    right: -60px;
+    top: -60px;
+    width: 260px;
+    height: 260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,212,170,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .saldo-label {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+
+  .saldo-valor {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 28px;
+  }
+
+  .saldo-valor .cifrao {
+    font-size: 1.6rem;
+    vertical-align: super;
+    color: var(--accent);
+    margin-right: 4px;
+  }
+
+  .saldo-meta {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .saldo-meta-item {}
+
+  .saldo-meta-label {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+
+  .saldo-meta-valor {
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+  }
+
+  .saldo-meta-valor.positivo { color: var(--accent); }
+  .saldo-meta-valor.negativo { color: var(--negative); }
+
+  /* ── Cards de métricas ── */
+  .metricas-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .metrica-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px;
+    animation: fadeUp 0.4s ease backwards;
+  }
+
+  .metrica-card:nth-child(2) { animation-delay: 0.06s; }
+  .metrica-card:nth-child(3) { animation-delay: 0.12s; }
+
+  .metrica-titulo {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+
+  .metrica-valor {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+
+  .metrica-sub {
+    font-size: 0.76rem;
+    font-weight: 500;
+  }
+
+  .metrica-sub.positivo { color: var(--accent); }
+  .metrica-sub.negativo { color: var(--negative); }
+  .metrica-sub.neutro { color: var(--text-secondary); }
+
+  /* ── Grade inferior ── */
+  .dash-grid {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 20px;
+  }
+
+  /* ── Últimas transações ── */
+  .transacoes-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 8px;
+    animation: fadeUp 0.4s ease 0.18s backwards;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 18px 12px;
+  }
+
+  .card-header h2 {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .ver-todas {
+    font-size: 0.82rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .ver-todas:hover { text-decoration: underline; }
+
+  .transacao-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 18px;
+    border-top: 1px solid var(--border);
+    animation: fadeUp 0.35s ease backwards;
+  }
+
+  .transacao-left {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+  }
+
+  .transacao-icone {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+  }
+
+  .transacao-icone.entrada { background: var(--accent-dim); }
+  .transacao-icone.saida { background: var(--negative-dim); }
+
+  .transacao-tipo {
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+
+  .transacao-data {
+    font-size: 0.76rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  .transacao-valor {
+    font-family: var(--font-display);
+    font-size: 0.92rem;
+    font-weight: 600;
+  }
+
+  .transacao-valor.entrada { color: var(--accent); }
+  .transacao-valor.saida { color: var(--negative); }
+
+  /* ── Gastos por categoria ── */
+  .categorias-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 8px;
+    animation: fadeUp 0.4s ease 0.24s backwards;
+  }
+
+  .categoria-item {
+    padding: 10px 18px;
+    border-top: 1px solid var(--border);
+  }
+
+  .categoria-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 7px;
+  }
+
+  .categoria-nome {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.84rem;
+    font-weight: 500;
+  }
+
+  .categoria-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .categoria-pct {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .categoria-barra-wrap {
+    height: 4px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .categoria-barra {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.8s ease;
+  }
+
+  /* ── Loading / erro ── */
+  .dash-loading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    padding: 20px 18px;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">Atlas</div>
+      <nav class="nav-group">
+        <p class="nav-label">Principal</p>
+        <a href="index.html" class="nav-item active">Visão geral</a>
+        <a href="transferir.html" class="nav-item">Transferências</a>
+        <a href="#" class="nav-item">Cartões</a>
+        <a href="#" class="nav-item">Investimentos</a>
+      </nav>
+      <nav class="nav-group">
+        <p class="nav-label">Conta</p>
+        <a href="extrato.html" class="nav-item">Extrato</a>
+        <a href="notificacoes.html" class="nav-item">Notificações</a>
+        <a href="configuracoes.html" class="nav-item">Configurações</a>
+      </nav>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="user-card">
+        <div class="avatar" id="avatarIniciais">GS</div>
+        <div>
+          <p class="user-name" id="nomeUsuario">Gustavo</p>
+          <p class="user-plan">Conta Free</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main" style="max-width: 1000px;">
+
+    <!-- Cabeçalho -->
+    <div class="dash-header">
+      <div class="dash-saudacao">
+        <h1 id="saudacao">Bom dia👋</h1>
+        <p id="dataAtual"></p>
+      </div>
+      <div class="dash-acoes">
+      <a href="/frontend/extrato.html" class="acao-btn">⬜ Extrato</a>
+      <a href="/frontend/transferir.html" class="acao-btn">⬜ Transferir</a>
+      <a href="/frontend/movimentar.html" class="acao-btn">⬜ Depositar</a>
+      </div>
+    </div>
+
+    <!-- Card de saldo -->
+    <div class="saldo-card">
+      <p class="saldo-label">Saldo disponível</p>
+      <div class="saldo-valor">
+        <span class="cifrao">R$</span><span id="saldoValor">0</span>
+      </div>
+      <div class="saldo-meta">
+        <div class="saldo-meta-item">
+          <p class="saldo-meta-label">Entradas este mês</p>
+          <p class="saldo-meta-valor positivo" id="entradasMes">R$ 0,00</p>
+        </div>
+        <div class="saldo-meta-item">
+          <p class="saldo-meta-label">Saídas este mês</p>
+          <p class="saldo-meta-valor negativo" id="saidasMes">R$ 0,00</p>
+        </div>
+        <div class="saldo-meta-item">
+          <p class="saldo-meta-label">Limite do cartão</p>
+          <p class="saldo-meta-valor">R$ 8.000,00</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Métricas -->
+    <div class="metricas-grid">
+      <div class="metrica-card">
+        <p class="metrica-titulo">⬜ Rendimento</p>
+        <p class="metrica-valor" id="totalRendimento">R$ 0,00</p>
+        <p class="metrica-sub positivo">acumulado na conta</p>
+      </div>
+      <div class="metrica-card">
+        <p class="metrica-titulo">⬜ Fatura atual</p>
+        <p class="metrica-valor">R$ 0,00</p>
+        <p class="metrica-sub neutro">Sem fatura em aberto</p>
+      </div>
+      <div class="metrica-card">
+        <p class="metrica-titulo">⬜ Guardado</p>
+        <p class="metrica-valor">R$ 0,00</p>
+        <p class="metrica-sub neutro">Meta: R$ 5.000,00</p>
+      </div>
+    </div>
+
+    <!-- Grid inferior -->
+    <div class="dash-grid">
+
+      <!-- Últimas transações -->
+      <div class="transacoes-card">
+        <div class="card-header">
+          <h2>Últimas transações</h2>
+          <a href="extrato.html" class="ver-todas">Ver todas</a>
+        </div>
+        <div id="transacoesList">
+          <div class="dash-loading">
+            <div class="spinner"></div>
+            <span>Carregando…</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Gastos por categoria -->
+      <div class="categorias-card">
+        <div class="card-header">
+          <h2>Gastos por categoria</h2>
+        </div>
+        <div id="categoriasList"></div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+<script src="dashboard.js"></script>
+</body>
+</html>

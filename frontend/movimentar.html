@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Movimentar — Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .toggle-wrap {
+    display: flex;
+    background: #0D1325;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 5px;
+    gap: 4px;
+    width: fit-content;
+    margin-bottom: 32px;
+  }
+
+  .toggle-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 10px 28px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease;
+  }
+
+  .toggle-btn.active-deposito {
+    background: var(--accent);
+    color: #04261F;
+  }
+
+  .toggle-btn.active-saque {
+    background: var(--negative);
+    color: #fff;
+  }
+
+  .form-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 32px;
+    max-width: 480px;
+    animation: fadeUp 0.4s ease backwards;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .form-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .form-input {
+    background: #0D1325;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 14px 18px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+
+  .form-input:focus {
+    border-color: var(--accent);
+  }
+
+  .form-input.saque-focus:focus {
+    border-color: var(--negative);
+  }
+
+  .form-input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.4;
+  }
+
+  .saldo-disponivel {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin-bottom: 24px;
+  }
+
+  .saldo-disponivel span {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 12px;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s ease, transform 0.1s ease;
+  }
+
+  .btn-submit:active {
+    transform: scale(0.98);
+  }
+
+  .btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-deposito {
+    background: var(--accent);
+    color: #04261F;
+  }
+
+  .btn-saque {
+    background: var(--negative);
+    color: #fff;
+  }
+
+  .feedback {
+    margin-top: 16px;
+    padding: 13px 16px;
+    border-radius: 10px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    display: none;
+  }
+
+  .feedback.sucesso {
+    background: var(--accent-dim);
+    color: var(--accent);
+    display: block;
+  }
+
+  .feedback.erro {
+    background: var(--negative-dim);
+    color: var(--negative);
+    display: block;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">Atlas</div>
+      <nav class="nav-group">
+        <p class="nav-label">Principal</p>
+        <a href="index.html" class="nav-item">Visão geral</a>
+        <a href="transferir.html" class="nav-item">Transferências</a>
+        <a href="movimentar.html" class="nav-item active">Depositar</a>
+        <a href="extrato.html" class="nav-item">Extrato</a>
+      </nav>
+      <nav class="nav-group">
+        <p class="nav-label">Conta</p>
+        <a href="extrato.html" class="nav-item">Extrato</a>
+        <a href="notificacoes.html" class="nav-item">Notificações</a>
+        <a href="configuracoes.html" class="nav-item">Configurações</a>
+      </nav>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="user-card">
+        <div class="avatar">GS</div>
+        <div>
+          <p class="user-name">Gustavo</p>
+          <p class="user-plan">Conta Free</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <header class="page-header">
+      <div>
+        <h1 id="tituloTela">Depósito</h1>
+        <p class="page-subtitle" id="dataAtual"></p>
+      </div>
+    </header>
+
+    <!-- Toggle -->
+    <div class="toggle-wrap">
+      <button class="toggle-btn active-deposito" id="btnDeposito" onclick="alternarModo('deposito')">
+        Depósito
+      </button>
+      <button class="toggle-btn" id="btnSaque" onclick="alternarModo('saque')">
+        Saque
+      </button>
+    </div>
+
+    <!-- Formulário -->
+    <div class="form-card">
+      <div class="form-group">
+        <label class="form-label">Conta</label>
+        <select class="form-input" id="contaSelect" style="font-size:0.95rem; font-family:var(--font-body);">
+          <option value="1">Agência 123 · Conta 456</option>
+        </select>
+      </div>
+
+      <p class="saldo-disponivel">Saldo disponível: <span id="saldoDisponivel">carregando…</span></p>
+
+      <div class="form-group">
+        <label class="form-label" id="labelValor">Valor do depósito</label>
+        <input
+          type="number"
+          class="form-input"
+          id="inputValor"
+          placeholder="0,00"
+          min="0.01"
+          step="0.01"
+        />
+      </div>
+
+      <button class="btn-submit btn-deposito" id="btnSubmit" onclick="executar()">
+        Confirmar depósito
+      </button>
+
+      <div class="feedback" id="feedback"></div>
+    </div>
+
+  </main>
+</div>
+
+<script src="movimentar.js"></script>
+</body>
+</html>

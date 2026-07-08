@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notificações — Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .notif-wrap {
+    max-width: 620px;
+  }
+
+  .notif-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .notif-count {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .btn-limpar {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+    font-size: 0.82rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.15s ease;
+  }
+
+  .btn-limpar:hover { color: var(--negative); }
+
+  .notif-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    animation: fadeUp 0.4s ease backwards;
+  }
+
+  .notif-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    transition: background 0.15s ease;
+    animation: fadeUp 0.35s ease backwards;
+  }
+
+  .notif-item:first-child { border-top: none; }
+  .notif-item:hover { background: rgba(255,255,255,0.02); }
+
+  .notif-item.nao-lida {
+    border-left: 3px solid var(--accent);
+  }
+
+  .notif-icone {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .notif-icone.entrada { background: var(--accent-dim); }
+  .notif-icone.saida { background: var(--negative-dim); }
+  .notif-icone.sistema { background: rgba(108, 99, 255, 0.15); }
+
+  .notif-titulo {
+    font-size: 0.88rem;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+
+  .notif-desc {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+
+  .notif-data {
+    font-size: 0.74rem;
+    color: var(--text-secondary);
+    margin-top: 5px;
+  }
+
+  .notif-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: #04261F;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 20px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
+  .notif-vazio {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 56px 20px;
+    color: var(--text-secondary);
+    font-size: 0.88rem;
+    gap: 10px;
+  }
+
+  .notif-vazio-icone {
+    font-size: 2rem;
+    opacity: 0.4;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">Atlas</div>
+      <nav class="nav-group">
+        <p class="nav-label">Principal</p>
+        <a href="index.html" class="nav-item">Visão geral</a>
+        <a href="transferir.html" class="nav-item">Transferências</a>
+        <a href="#" class="nav-item">Cartões</a>
+        <a href="#" class="nav-item">Investimentos</a>
+      </nav>
+      <nav class="nav-group">
+        <p class="nav-label">Conta</p>
+        <a href="extrato.html" class="nav-item">Extrato</a>
+        <a href="notificacoes.html" class="nav-item active">Notificações</a>
+        <a href="configuracoes.html" class="nav-item">Configurações</a>
+      </nav>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="user-card">
+        <div class="avatar">GS</div>
+        <div>
+          <p class="user-name">Gustavo</p>
+          <p class="user-plan">Conta Free</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <header class="page-header">
+      <div>
+        <h1>Notificações <span class="notif-badge" id="badgeCount">0</span></h1>
+        <p class="page-subtitle">Alertas e avisos da sua conta</p>
+      </div>
+    </header>
+
+    <div class="notif-wrap">
+      <div class="notif-header-row">
+        <span class="notif-count" id="notifCount">Carregando…</span>
+        <button class="btn-limpar" onclick="marcarTodasLidas()">Marcar todas como lidas</button>
+      </div>
+
+      <div class="notif-card" id="notifLista">
+        <div class="dash-loading">
+          <div class="spinner"></div>
+          <span>Carregando notificações…</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script src="notificacoes.js"></script>
+</body>
+</html>

@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Configurações — Atlas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+  .config-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 600px;
+  }
+
+  .config-section {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    animation: fadeUp 0.4s ease backwards;
+  }
+
+  .config-section:nth-child(2) { animation-delay: 0.06s; }
+  .config-section:nth-child(3) { animation-delay: 0.12s; }
+
+  .config-section-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .config-section-title {
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .config-section-sub {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-top: 3px;
+  }
+
+  .config-body {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .form-label {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .form-input {
+    background: #0D1325;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    padding: 11px 14px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+
+  .form-input:focus {
+    border-color: var(--accent);
+  }
+
+  .form-input:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-salvar {
+    align-self: flex-start;
+    background: var(--accent);
+    color: #04261F;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 22px;
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s ease;
+    margin-top: 4px;
+  }
+
+  .btn-salvar:hover { opacity: 0.85; }
+  .btn-salvar:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .feedback {
+    font-size: 0.83rem;
+    font-weight: 500;
+    padding: 10px 14px;
+    border-radius: 9px;
+    display: none;
+  }
+
+  .feedback.sucesso {
+    background: var(--accent-dim);
+    color: var(--accent);
+    display: block;
+  }
+
+  .feedback.erro {
+    background: var(--negative-dim);
+    color: var(--negative);
+    display: block;
+  }
+
+  /* Preferências */
+  .pref-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 22px;
+    border-top: 1px solid var(--border);
+  }
+
+  .pref-item:first-child { border-top: none; }
+
+  .pref-label {
+    font-size: 0.88rem;
+    font-weight: 500;
+  }
+
+  .pref-sub {
+    font-size: 0.76rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+
+  .pref-select {
+    background: #0D1325;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    padding: 7px 12px;
+    cursor: pointer;
+  }
+
+  /* Toggle switch */
+  .toggle {
+    position: relative;
+    width: 44px;
+    height: 24px;
+    flex-shrink: 0;
+  }
+
+  .toggle input { opacity: 0; width: 0; height: 0; }
+
+  .toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--border);
+    border-radius: 24px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .toggle-slider::before {
+    content: "";
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 3px;
+    top: 3px;
+    background: #fff;
+    border-radius: 50%;
+    transition: transform 0.2s ease;
+  }
+
+  .toggle input:checked + .toggle-slider { background: var(--accent); }
+  .toggle input:checked + .toggle-slider::before { transform: translateX(20px); }
+
+  /* Dados da conta */
+  .dado-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 22px;
+    border-top: 1px solid var(--border);
+  }
+
+  .dado-item:first-child { border-top: none; }
+
+  .dado-label {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .dado-valor {
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">Atlas</div>
+      <nav class="nav-group">
+        <p class="nav-label">Principal</p>
+        <a href="index.html" class="nav-item">Visão geral</a>
+        <a href="transferir.html" class="nav-item">Transferências</a>
+        <a href="#" class="nav-item">Cartões</a>
+        <a href="#" class="nav-item">Investimentos</a>
+      </nav>
+      <nav class="nav-group">
+        <p class="nav-label">Conta</p>
+        <a href="extrato.html" class="nav-item">Extrato</a>
+        <a href="notificacoes.html" class="nav-item">Notificações</a>
+        <a href="configuracoes.html" class="nav-item active">Configurações</a>
+      </nav>
+    </div>
+    <div class="sidebar-bottom">
+      <div class="user-card">
+        <div class="avatar" id="avatarIniciais">GS</div>
+        <div>
+          <p class="user-name" id="nomeUsuario">Gustavo</p>
+          <p class="user-plan">Conta Free</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <header class="page-header">
+      <div>
+        <h1>Configurações</h1>
+        <p class="page-subtitle">Gerencie sua conta e preferências</p>
+      </div>
+    </header>
+
+    <div class="config-grid">
+
+      <!-- Dados pessoais -->
+      <div class="config-section">
+        <div class="config-section-header">
+          <p class="config-section-title">Dados pessoais</p>
+          <p class="config-section-sub">Atualize seu nome, email e senha</p>
+        </div>
+        <div class="config-body">
+          <div class="form-group">
+            <label class="form-label">Nome</label>
+            <input type="text" class="form-input" id="inputNome" placeholder="Seu nome">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="inputEmail" placeholder="seu@email.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Nova senha <span style="color:var(--text-secondary)">(deixe em branco para não alterar)</span></label>
+            <input type="password" class="form-input" id="inputSenha" placeholder="••••••••">
+          </div>
+          <div class="feedback" id="feedbackPessoal"></div>
+          <button class="btn-salvar" id="btnSalvarPessoal" onclick="salvarDadosPessoais()">
+            Salvar alterações
+          </button>
+        </div>
+      </div>
+
+      <!-- Preferências -->
+      <div class="config-section">
+        <div class="config-section-header">
+          <p class="config-section-title">Preferências</p>
+          <p class="config-section-sub">Idioma e notificações</p>
+        </div>
+
+        <div class="pref-item">
+          <div>
+            <p class="pref-label">Idioma</p>
+            <p class="pref-sub">Idioma da interface</p>
+          </div>
+          <select class="pref-select" id="idiomaSelect" onchange="salvarPreferencias()">
+            <option value="pt">Português</option>
+            <option value="en">English</option>
+          </select>
+        </div>
+
+        <div class="pref-item">
+          <div>
+            <p class="pref-label">Notificações de transações</p>
+            <p class="pref-sub">Alertas ao realizar operações</p>
+          </div>
+          <label class="toggle">
+            <input type="checkbox" id="notifToggle" checked onchange="salvarPreferencias()">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Dados da conta -->
+      <div class="config-section">
+        <div class="config-section-header">
+          <p class="config-section-title">Dados da conta</p>
+          <p class="config-section-sub">Informações bancárias</p>
+        </div>
+
+        <div class="dado-item">
+          <span class="dado-label">Agência</span>
+          <span class="dado-valor" id="dadoAgencia">—</span>
+        </div>
+        <div class="dado-item">
+          <span class="dado-label">Número da conta</span>
+          <span class="dado-valor" id="dadoConta">—</span>
+        </div>
+        <div class="dado-item">
+          <span class="dado-label">Tipo</span>
+          <span class="dado-valor" id="dadoTipo">—</span>
+        </div>
+        <div class="dado-item">
+          <span class="dado-label">Saldo atual</span>
+          <span class="dado-valor" id="dadoSaldo" style="color:var(--accent)">—</span>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+<script src="configuracoes.js"></script>
+</body>
+</html>
