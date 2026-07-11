@@ -2,7 +2,7 @@
 
 Banco digital completo desenvolvido em Go como parte da minha jornada de aprendizado na linguagem. O projeto simula as operações de uma instituição financeira real, com cadastro de usuários, contas correntes, depósitos, saques, transferências e extrato de movimentações, unindo backend em Go, banco de dados PostgreSQL e frontend em HTML, CSS e JavaScript puro.
 
-O projeto nasceu com o nome fin.anceiro e passou por um rebrand ao longo do desenvolvimento, virando Atlas. A ideia é seguir evoluindo com novas telas, incluindo futuramente uma seção de investimentos.
+A ideia é seguir evoluindo com novas telas, incluindo futuramente uma seção de investimentos.
 
 ---
 
@@ -201,6 +201,4 @@ Esse foi meu principal projeto de estudo em Go até aqui. Aprendi a estruturar u
 
 ---
 
-Feito por Gustavo Bispo — Analista de Sistemas em transição para desenvolvimento backend com foco em Go.
-
-GitHub • Linkedin
+Gustavo Bispo — Desenvolvedor backend com foco em Go.
