@@ -21,10 +21,11 @@ func Conectar() {
 		log.Fatal("Erro ao carregar .env")
 	}
 
-	dsn := fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=%s",
+	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s",
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_PORT"),
 		os.Getenv("DB_USER"),
+		os.Getenv("DB_PASSWORD"),
 		os.Getenv("DB_NAME"),
 		os.Getenv("DB_SSLMODE"),
 	)
@@ -43,27 +44,40 @@ func Conectar() {
 	fmt.Println("Conectado ao PostgreSQL com sucesso!")
 }
 
-// CriarUsuario insere um novo usuário no banco.
-// A senha é armazenada como hash bcrypt.
+// CriarUsuario insere um novo usuário no banco. A senhha é armazenada como Hash bcrypt.
 
 func CriarUsuario(nome, cpf, email, senha string) error {
-
-	// Gera o hash da senha — custo 10 é o padrão recomendado
-
 	hash, err := bcrypt.GenerateFromPassword([]byte(senha), 10)
 	if err != nil {
 		return fmt.Errorf("erro ao gerar hash da senha: %v", err)
 	}
 
-	// Insere o usuário no banco
+	// Insere o usuário e retorna o ID gerado
 
-	_, err = DB.Exec(`
+	var usuarioID int
+	err = DB.QueryRow(`
 		INSERT INTO usuarios (nome, cpf, email, senha)
-		VALUES ($1, $2, $3, $4)`,
+		VALUES ($1, $2, $3, $4)
+		RETURNING id`,
 		nome, cpf, email, string(hash),
-	)
+	).Scan(&usuarioID)
 	if err != nil {
 		return fmt.Errorf("erro ao criar usuário: %v", err)
+	}
+
+	// Gera número de conta único baseado no ID
+
+	numeroConta := 1000 + usuarioID
+
+	// Cria conta corrente automaticamente
+
+	_, err = DB.Exec(`
+		INSERT INTO contas (usuario_id, numero_agencia, numero_conta, tipo, saldo)
+		VALUES ($1, 123, $2, 'corrente', 0.00)`,
+		usuarioID, numeroConta,
+	)
+	if err != nil {
+		return fmt.Errorf("erro ao criar conta: %v", err)
 	}
 
 	return nil
@@ -86,6 +100,7 @@ func BuscarUsuario(email, senha string) (*conta.ContaCorrente, error) {
 	}
 
 	// Compara a senha digitada com o hash armazenado
+
 	err = bcrypt.CompareHashAndPassword([]byte(hashSenha), []byte(senha))
 	if err != nil {
 		return nil, fmt.Errorf("senha incorreta")
@@ -227,6 +242,7 @@ func BuscarContaPorNumero(numeroConta int) (int, string, error) {
 }
 
 // Implementei uma função que pega os usurios pelo ID
+
 func BuscarUsuarioPorID(id int) (string, string, error) {
 	var nome, email string
 	err := DB.QueryRow(`
@@ -239,6 +255,7 @@ func BuscarUsuarioPorID(id int) (string, string, error) {
 }
 
 // Atualização de nome e email dos usuarios
+
 func AtualizarUsuario(id int, nome, email, novaSenha string) error {
 	var err error
 
@@ -256,6 +273,7 @@ func AtualizarUsuario(id int, nome, email, novaSenha string) error {
 
 		//Atualização sem mudar a senha
 		// atualiza sem mudar a senha
+
 		_, err = DB.Exec(`
 			UPDATE usuarios SET nome = $1, email = $2 WHERE id = $3`,
 			nome, email, id,
@@ -266,4 +284,23 @@ func AtualizarUsuario(id int, nome, email, novaSenha string) error {
 		return fmt.Errorf("erro ao atualizar usuário: %v", err)
 	}
 	return nil
+}
+
+// BuscarContaPorUsuario retorna os dados da conta pelo ID do usuário
+
+func BuscarContaPorUsuario(usuarioID int) (int, int, int, string, error) {
+	var id, numeroAgencia, numeroConta int
+	var tipo string
+
+	err := DB.QueryRow(`
+		SELECT id, numero_agencia, numero_conta, tipo
+		FROM contas
+		WHERE usuario_id = $1`,
+		usuarioID,
+	).Scan(&id, &numeroAgencia, &numeroConta, &tipo)
+	if err != nil {
+		return 0, 0, 0, "", fmt.Errorf("conta não encontrada")
+	}
+
+	return id, numeroAgencia, numeroConta, tipo, nil
 }

@@ -230,14 +230,23 @@
       </nav>
     </div>
     <div class="sidebar-bottom">
-      <div class="user-card">
-        <div class="avatar">GS</div>
-        <div>
-          <p class="user-name">Gustavo</p>
-          <p class="user-plan">Conta Free</p>
-        </div>
-      </div>
+  <div class="user-card">
+    <div class="avatar" id="avatarIniciais">GS</div>
+    <div style="flex:1">
+      <p class="user-name" id="nomeUsuario">Gustavo</p>
+      <p class="user-plan">Conta Free</p>
     </div>
+    <button onclick="sair()" style="
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 4px;
+      transition: color 0.15s ease;
+    " title="Sair">⏻</button>
+  </div>
+</div>
   </aside>
 
   <!-- MAIN -->

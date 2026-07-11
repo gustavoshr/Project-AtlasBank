@@ -114,6 +114,32 @@ async function buscarContaDestino() {
   }
 }
 
+// Adicionei a função de sair
+function sair() {
+  localStorage.removeItem("atlas_usuario");
+  window.location.href = "login.html";
+}
+
+async function carregarContaOrigem() {
+  const usuario = JSON.parse(localStorage.getItem("atlas_usuario") || "{}");
+  const usuarioID = usuario.id || 1;
+
+  try {
+    const res = await fetch(`${API_URL}/contas/usuario?usuario_id=${usuarioID}`);
+    const conta = await res.json();
+
+    // atualiza o select com os dados reais
+
+    const select = document.getElementById("contaOrigemSelect");
+    select.innerHTML = `<option value="${conta.id}">Agência ${conta.numero_agencia} · Conta ${conta.numero_conta}</option>`;
+
+    // atualiza o saldo
+
+    buscarSaldo();
+  } catch {
+    console.error("Erro ao carregar conta de origem");
+  }
+}
 
 // Executar transferência
 
@@ -185,5 +211,5 @@ elInputNumeroConta.addEventListener("keydown", (e) => {
 // Inicialização
 
 setDataAtual();
-buscarSaldo();
+carregarContaOrigem();
 elOrigemSelect.addEventListener("change", buscarSaldo);

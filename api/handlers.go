@@ -1,16 +1,20 @@
 package api
 
 import (
-	"Financeiro/database"
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"strings"
+
+	"Financeiro/database"
 )
 
 // CriarUsuarioHandler recebe os dados via POST e cria um novo usuário
 
 func CriarUsuarioHandler(w http.ResponseWriter, r *http.Request) {
-	// Só aceita metoddo POST
+
+	// Só aceita método POST
+
 	if r.Method != http.MethodPost {
 		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
 		return
@@ -23,11 +27,26 @@ func CriarUsuarioHandler(w http.ResponseWriter, r *http.Request) {
 		Senha string `json:"senha"`
 	}
 
-	// Decodifica o JSON recebido para a struct
-
 	err := json.NewDecoder(r.Body).Decode(&body)
 	if err != nil {
 		http.Error(w, "Dados inválidos", http.StatusInternalServerError)
+		return
+	}
+
+	// Validações de entrada
+
+	if len(body.Nome) < 3 {
+		http.Error(w, "Nome deve ter no mínimo 3 caracteres", http.StatusBadRequest)
+		return
+	}
+
+	if len(body.Senha) < 6 {
+		http.Error(w, "Senha deve ter no mínimo 6 caracteres", http.StatusBadRequest)
+		return
+	}
+
+	if !strings.Contains(body.Email, "@") {
+		http.Error(w, "Email inválido", http.StatusBadRequest)
 		return
 	}
 
@@ -39,7 +58,7 @@ func CriarUsuarioHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//Retorno dizendo se foi sucesso ou não.
+	//Retorno dizendo se foi sucesso ou não
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
@@ -73,10 +92,18 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Busca o ID do usuário pelo email
+	var usuarioID int
+	err = database.DB.QueryRow(`SELECT id FROM usuarios WHERE email = $1`, body.Email).Scan(&usuarioID)
+	if err != nil {
+		usuarioID = 0
+	}
+
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{
+	json.NewEncoder(w).Encode(map[string]interface{}{
 		"mensagem": "Login realizado com sucesso!",
 		"titular":  conta.Titular,
+		"id":       usuarioID,
 	})
 }
 
@@ -98,6 +125,17 @@ func CriarContaHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Dados inválidos", http.StatusBadRequest)
 		return
 	}
+
+	// Validações — antes de chamar o banco
+	if body.UsuarioID <= 0 {
+		http.Error(w, "usuario_id inválido", http.StatusBadRequest)
+		return
+	}
+	if body.Tipo != "corrente" && body.Tipo != "poupanca" {
+		http.Error(w, "Tipo deve ser 'corrente' ou 'poupanca'", http.StatusBadRequest)
+		return
+	}
+
 	err = database.CriarConta(body.UsuarioID, body.NumeroAgencia, body.NumeroConta, body.Tipo)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -112,6 +150,7 @@ func CriarContaHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // DepositoHandler realiza um depósito em uma conta
+
 func DepositoHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
@@ -129,6 +168,11 @@ func DepositoHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if body.Valor <= 0 {
+		http.Error(w, "Valor deve ser maior que zero", http.StatusBadRequest)
+		return
+	}
+
 	err = database.RegistrarDeposito(body.ContaID, body.Valor, body.Valor)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -143,6 +187,7 @@ func DepositoHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // saqueHandler realiza um saque em uma conta
+
 func SaqueHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
@@ -160,6 +205,11 @@ func SaqueHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if body.Valor <= 0 {
+		http.Error(w, "Valor deve ser maior que zero", http.StatusBadRequest)
+		return
+	}
+
 	err = database.RegistrarTransacao(body.ContaID, "Saque", body.Valor, 0)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -174,6 +224,7 @@ func SaqueHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // TransferenciaHandler realiza uma transferência entre contas
+
 func TransferenciaHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
@@ -192,6 +243,11 @@ func TransferenciaHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if body.Valor <= 0 {
+		http.Error(w, "Valor deve ser maior que zero", http.StatusBadRequest)
+		return
+	}
+
 	err = database.RegistrarTransferencia(body.ContaOrigemID, body.ContaDestinoID, body.Valor)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -206,6 +262,7 @@ func TransferenciaHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // ExtratoHandler retorna o extrato de uma conta
+
 func ExtratoHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
@@ -213,6 +270,7 @@ func ExtratoHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// pega o conta_id da query string: /extrato?conta_id=1
+
 	contaIDStr := r.URL.Query().Get("conta_id")
 	if contaIDStr == "" {
 		http.Error(w, "conta_id não informado", http.StatusBadRequest)
@@ -220,6 +278,7 @@ func ExtratoHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// converte string para int
+
 	contaID, err := strconv.Atoi(contaIDStr)
 	if err != nil {
 		http.Error(w, "conta_id inválido", http.StatusBadRequest)
@@ -270,6 +329,7 @@ func BuscarContaHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // BuscarUsuarioHandler retorna dados do usuário pelo ID
+
 func BuscarUsuarioHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
@@ -302,6 +362,7 @@ func BuscarUsuarioHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 // AtualizarUsuarioHandler atualiza nome, email e senha
+
 func AtualizarUsuarioHandler(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPut {
 		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
@@ -330,5 +391,40 @@ func AtualizarUsuarioHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{
 		"mensagem": "Dados atualizados com sucesso!",
+	})
+}
+
+// BuscarContaUsuarioHandler retorna a conta do usuário logado
+
+func BuscarContaUsuarioHandler(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		http.Error(w, "Método não permitido", http.StatusMethodNotAllowed)
+		return
+	}
+
+	usuarioIDStr := r.URL.Query().Get("usuario_id")
+	if usuarioIDStr == "" {
+		http.Error(w, "usuario_id não informado", http.StatusBadRequest)
+		return
+	}
+
+	usuarioID, err := strconv.Atoi(usuarioIDStr)
+	if err != nil {
+		http.Error(w, "usuario_id inválido", http.StatusBadRequest)
+		return
+	}
+
+	id, agencia, numeroConta, tipo, err := database.BuscarContaPorUsuario(usuarioID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(map[string]interface{}{
+		"id":             id,
+		"numero_agencia": agencia,
+		"numero_conta":   numeroConta,
+		"tipo":           tipo,
 	})
 }

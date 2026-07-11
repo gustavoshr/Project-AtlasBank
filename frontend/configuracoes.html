@@ -224,8 +224,6 @@
         <p class="nav-label">Principal</p>
         <a href="index.html" class="nav-item">Visão geral</a>
         <a href="transferir.html" class="nav-item">Transferências</a>
-        <a href="#" class="nav-item">Cartões</a>
-        <a href="#" class="nav-item">Investimentos</a>
       </nav>
       <nav class="nav-group">
         <p class="nav-label">Conta</p>
@@ -235,14 +233,23 @@
       </nav>
     </div>
     <div class="sidebar-bottom">
-      <div class="user-card">
-        <div class="avatar" id="avatarIniciais">GS</div>
-        <div>
-          <p class="user-name" id="nomeUsuario">Gustavo</p>
-          <p class="user-plan">Conta Free</p>
-        </div>
-      </div>
+  <div class="user-card">
+    <div class="avatar" id="avatarIniciais">GS</div>
+    <div style="flex:1">
+      <p class="user-name" id="nomeUsuario">Gustavo</p>
+      <p class="user-plan">Conta Free</p>
     </div>
+    <button onclick="sair()" style="
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 4px;
+      transition: color 0.15s ease;
+    " title="Sair">⏻</button>
+  </div>
+</div>
   </aside>
 
   <!-- MAIN -->

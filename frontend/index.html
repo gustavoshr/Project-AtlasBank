@@ -340,8 +340,6 @@
         <p class="nav-label">Principal</p>
         <a href="index.html" class="nav-item active">Visão geral</a>
         <a href="transferir.html" class="nav-item">Transferências</a>
-        <a href="#" class="nav-item">Cartões</a>
-        <a href="#" class="nav-item">Investimentos</a>
       </nav>
       <nav class="nav-group">
         <p class="nav-label">Conta</p>
@@ -351,14 +349,23 @@
       </nav>
     </div>
     <div class="sidebar-bottom">
-      <div class="user-card">
-        <div class="avatar" id="avatarIniciais">GS</div>
-        <div>
-          <p class="user-name" id="nomeUsuario">Gustavo</p>
-          <p class="user-plan">Conta Free</p>
-        </div>
-      </div>
+  <div class="user-card">
+    <div class="avatar" id="avatarIniciais">GS</div>
+    <div style="flex:1">
+      <p class="user-name" id="nomeUsuario">Gustavo</p>
+      <p class="user-plan">Conta Free</p>
     </div>
+    <button onclick="sair()" style="
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 4px;
+      transition: color 0.15s ease;
+    " title="Sair">⏻</button>
+  </div>
+</div>
   </aside>
 
   <!-- MAIN -->
@@ -379,25 +386,25 @@
 
     <!-- Card de saldo -->
     <div class="saldo-card">
-      <p class="saldo-label">Saldo disponível</p>
-      <div class="saldo-valor">
-        <span class="cifrao">R$</span><span id="saldoValor">0</span>
-      </div>
-      <div class="saldo-meta">
-        <div class="saldo-meta-item">
-          <p class="saldo-meta-label">Entradas este mês</p>
-          <p class="saldo-meta-valor positivo" id="entradasMes">R$ 0,00</p>
-        </div>
-        <div class="saldo-meta-item">
-          <p class="saldo-meta-label">Saídas este mês</p>
-          <p class="saldo-meta-valor negativo" id="saidasMes">R$ 0,00</p>
-        </div>
-        <div class="saldo-meta-item">
-          <p class="saldo-meta-label">Limite do cartão</p>
-          <p class="saldo-meta-valor">R$ 8.000,00</p>
-        </div>
-      </div>
+  <p class="saldo-label">Saldo disponível</p>
+  <div class="saldo-valor">
+    <span class="cifrao">R$</span><span id="saldoValor">0</span>
+  </div>
+  <div class="saldo-meta">
+    <div class="saldo-meta-item">
+      <p class="saldo-meta-label">Entradas este mês</p>
+      <p class="saldo-meta-valor positivo" id="entradasMes">R$ 0,00</p>
     </div>
+    <div class="saldo-meta-item">
+      <p class="saldo-meta-label">Saídas este mês</p>
+      <p class="saldo-meta-valor negativo" id="saidasMes">R$ 0,00</p>
+    </div>
+    <div class="saldo-meta-item">
+      <p class="saldo-meta-label">Agência / Conta</p>
+      <p class="saldo-meta-valor"><span id="dadoAgencia">—</span> / <span id="dadoConta">—</span></p>
+    </div>
+  </div>
+</div>
 
     <!-- Métricas -->
     <div class="metricas-grid">

@@ -21,6 +21,7 @@ type ContaCorrente struct {
 
 // Sacar debita um valor da conta.
 // Usa ponteiro (*ContaCorrente) para modificar o saldo real, não uma cópia.
+
 func (c *ContaCorrente) Sacar(valorSaque float64) string {
 	podeSacar := valorSaque > 0 && valorSaque <= c.Saldo
 	if podeSacar {
@@ -40,6 +41,7 @@ func (c *ContaCorrente) Sacar(valorSaque float64) string {
 
 // Depositar adiciona um valor à conta.
 // Retorna a mensagem de status e o saldo atualizado.
+
 func (c *ContaCorrente) Depositar(valorDeposito float64) (string, float64) {
 	if valorDeposito > 0 {
 		c.Saldo += valorDeposito
@@ -56,6 +58,7 @@ func (c *ContaCorrente) Depositar(valorDeposito float64) (string, float64) {
 
 // Transferir move um valor desta conta para a conta destino.
 // contaDestino é um ponteiro para que o saldo dela seja alterado de verdade.
+
 func (c *ContaCorrente) Transferir(contaDestino *ContaCorrente, valorTransferencia float64) string {
 	if valorTransferencia <= 0 {
 		return "Valor de transferência inválido"

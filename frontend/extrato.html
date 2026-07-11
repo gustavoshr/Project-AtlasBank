@@ -34,15 +34,24 @@
       </nav>
     </div>
  
-    <div class="sidebar-bottom">
-      <div class="user-card">
+      <div class="sidebar-bottom">
+        <div class="user-card">
         <div class="avatar" id="avatarIniciais">GS</div>
-        <div>
-          <p class="user-name" id="nomeUsuario">Usuário</p>
-          <p class="user-plan">Conta Free</p>
-        </div>
-      </div>
+        <div style="flex:1">
+        <p class="user-name" id="nomeUsuario">Gustavo</p>
+        <p class="user-plan">Conta Free</p>
     </div>
+    <button onclick="sair()" style="
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1.1rem;
+      padding: 4px;
+      transition: color 0.15s ease;
+    " title="Sair">⏻</button>
+  </div>
+</div>
   </aside>
  
   <!-- ===== MAIN ===== -->
@@ -91,22 +100,24 @@
         </div>
       </div>
  
-      <div id="extratoLista" class="extrato-lista">
-        <!-- preenchido via JS -->
-        <div class="extrato-loading" id="loadingState">
-          <div class="spinner"></div>
-          <p>Carregando movimentações…</p>
-        </div>
-      </div>
- 
-      <div class="extrato-vazio" id="vazioState" hidden>
-        <p>Nenhuma movimentação encontrada para esta conta ainda.</p>
-      </div>
- 
-      <div class="extrato-erro" id="erroState" hidden>
-        <p id="erroMensagem">Não foi possível carregar o extrato.</p>
-        <button id="tentarNovamente" class="retry-btn">Tentar novamente</button>
-      </div>
+      <!-- Loading FORA da lista -->
+<div class="extrato-loading" id="loadingState">
+  <div class="spinner"></div>
+  <p>Carregando movimentações…</p>
+</div>
+
+<div id="extratoLista" class="extrato-lista">
+  <!-- preenchido via JS -->
+</div>
+
+<div class="extrato-vazio" id="vazioState" hidden>
+  <p>Nenhuma movimentação encontrada para esta conta ainda.</p>
+</div>
+
+<div class="extrato-erro" id="erroState" hidden>
+  <p id="erroMensagem">Não foi possível carregar o extrato.</p>
+  <button id="tentarNovamente" class="retry-btn">Tentar novamente</button>
+</div>
     </section>
  
   </main>

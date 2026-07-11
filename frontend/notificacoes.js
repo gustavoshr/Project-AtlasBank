@@ -1,15 +1,15 @@
-// ============================================
+
 // notificacoes.js
 // Gera notificações a partir das transações reais
-// ============================================
+
 
 const API_URL = "http://localhost:8080";
 const CONTA_ID = 1;
 const STORAGE_KEY = "atlas_notif_lidas";
 
-// ============================================
+
 // Utilitários
-// ============================================
+
 
 function formatarMoeda(valor) {
   return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -40,9 +40,9 @@ function setLidas(ids) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(ids));
 }
 
-// ============================================
+
 // Gera notificações a partir das transações
-// ============================================
+
 
 function gerarNotificacoes(transacoes) {
   const notifs = [];
@@ -107,9 +107,9 @@ function gerarNotificacoes(transacoes) {
   return notifs.sort((a, b) => new Date(b.data) - new Date(a.data));
 }
 
-// ============================================
+
 // Renderização
-// ============================================
+
 
 function renderizarNotificacoes(notifs) {
   const el = document.getElementById("notifLista");
@@ -147,9 +147,9 @@ function renderizarNotificacoes(notifs) {
   }).join("");
 }
 
-// ============================================
+
 // Marcar como lida
-// ============================================
+
 
 function marcarLida(id, el) {
   const lidas = getLidas();
@@ -183,9 +183,15 @@ function marcarTodasLidas() {
   document.getElementById("notifCount").textContent = "Tudo em dia";
 }
 
-// ============================================
+// Adicionei a função de sair
+function sair() {
+  localStorage.removeItem("atlas_usuario");
+  window.location.href = "login.html";
+}
+
+
 // Init
-// ============================================
+
 
 async function init() {
   try {

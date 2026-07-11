@@ -70,6 +70,12 @@ function alternarModo(modo) {
   elFeedback.className = "feedback";
 }
 
+// Adicionei a função de sair
+function sair() {
+  localStorage.removeItem("atlas_usuario");
+  window.location.href = "login.html";
+}
+
 // Busca saldo da conta selecionada
 
 async function buscarSaldo() {
@@ -92,6 +98,45 @@ async function buscarSaldo() {
     elSaldo.textContent = formatarMoeda(saldo);
   } catch {
     elSaldo.textContent = "—";
+  }
+}
+
+// carrega os dados de origem do Usuarios nas telas dentro do Site
+
+async function carregarContaOrigem() {
+  const usuario = JSON.parse(localStorage.getItem("atlas_usuario") || "{}");
+  const usuarioID = usuario.id || 1;
+
+  try {
+    const res = await fetch(`${API_URL}/contas/usuario?usuario_id=${usuarioID}`);
+    const conta = await res.json();
+
+    // atualiza o select com os dados reais
+    const select = document.getElementById("contaOrigemSelect");
+    select.innerHTML = `<option value="${conta.id}">Agência ${conta.numero_agencia} · Conta ${conta.numero_conta}</option>`;
+
+    // atualiza o saldo
+    buscarSaldo();
+  } catch {
+    console.error("Erro ao carregar conta de origem");
+  }
+}
+
+// Dupliquei as funções entre os arquivos para que as telas sempre possam carregar os dados de origem da conta.
+async function carregarContaOrigem() {
+  const usuario = JSON.parse(localStorage.getItem("atlas_usuario") || "{}");
+  const usuarioID = usuario.id || 1;
+
+  try {
+    const res = await fetch(`${API_URL}/contas/usuario?usuario_id=${usuarioID}`);
+    const conta = await res.json();
+
+    const select = document.getElementById("contaSelect");
+    select.innerHTML = `<option value="${conta.id}">Agência ${conta.numero_agencia} · Conta ${conta.numero_conta}</option>`;
+
+    buscarSaldo();
+  } catch {
+    console.error("Erro ao carregar conta");
   }
 }
 
@@ -138,5 +183,5 @@ async function executar() {
 // Inicialização
 
 setDataAtual();
-buscarSaldo();
+carregarContaOrigem();
 elContaSelect.addEventListener("change", buscarSaldo);

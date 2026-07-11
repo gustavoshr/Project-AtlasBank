@@ -1,13 +1,13 @@
-// ============================================
+
 // dashboard.js
-// ============================================
+
 
 const API_URL = "http://localhost:8080";
 const CONTA_ID = 1; // conta padrão por enquanto
 
-// ============================================
+
 // Utilitários
-// ============================================
+
 
 function formatarMoeda(valor) {
   return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -48,9 +48,9 @@ function saudacaoPorHora() {
   return "Boa noite";
 }
 
-// ============================================
+
 // Cabeçalho
-// ============================================
+
 
 async function inicializarCabecalho() {
   // busca nome real do usuário
@@ -86,21 +86,45 @@ async function inicializarCabecalho() {
   });
   document.getElementById("dataAtual").textContent =
     formatada.charAt(0).toUpperCase() + formatada.slice(1);
+
+  // salva nome do usuário logado
+    localStorage.setItem("atlas_usuario", JSON.stringify({ nome: nomeUsuario }));
 }
 
-// ============================================
+function sair() {
+  localStorage.removeItem("atlas_usuario");
+  window.location.href = "login.html";
+}
+
+
 // Carrega extrato e popula o dashboard
-// ============================================
 
 async function carregarDashboard() {
   try {
-    const res = await fetch(`${API_URL}/extrato?conta_id=${CONTA_ID}`);
+    // busca dados da conta do usuário logado
+
+    const usuario = JSON.parse(localStorage.getItem("atlas_usuario") || "{}");
+    const usuarioID = usuario.id || 1;
+
+    const resConta = await fetch(`${API_URL}/contas/usuario?usuario_id=${usuarioID}`);
+    const conta = await resConta.json();
+    const contaID = conta.id;
+    const res = await fetch(`${API_URL}/extrato?conta_id=${contaID}`);
     const dados = await res.json();
     const transacoes = dados || [];
 
     calcularSaldo(transacoes);
     renderizarTransacoes(transacoes.slice(0, 5));
     renderizarCategorias(transacoes);
+
+    // exibe agência e conta no dashboard
+
+    if (document.getElementById("dadoAgencia")) {
+      document.getElementById("dadoAgencia").textContent = conta.numero_agencia;
+    }
+    if (document.getElementById("dadoConta")) {
+      document.getElementById("dadoConta").textContent = conta.numero_conta;
+    }
 
   } catch (err) {
     console.error("Erro ao carregar dashboard:", err);
@@ -111,9 +135,9 @@ async function carregarDashboard() {
   }
 }
 
-// ============================================
+
 // Cálculo de saldo e métricas
-// ============================================
+
 
 function calcularSaldo(transacoes) {
   let saldo = 0;
@@ -163,9 +187,8 @@ function animarNumero(elId, valorFinal) {
   requestAnimationFrame(tick);
 }
 
-// ============================================
+
 // Últimas transações
-// ============================================
 
 function renderizarTransacoes(transacoes) {
   const el = document.getElementById("transacoesList");
@@ -193,9 +216,9 @@ function renderizarTransacoes(transacoes) {
   }).join("");
 }
 
-// ============================================
+
 // Gastos por categoria (calculado das transações)
-// ============================================
+
 
 function renderizarCategorias(transacoes) {
   // agrupa saídas por tipo
@@ -243,9 +266,9 @@ function renderizarCategorias(transacoes) {
     }).join("");
 }
 
-// ============================================
+
 // Init
-// ============================================
+
 
 inicializarCabecalho();
 carregarDashboard();

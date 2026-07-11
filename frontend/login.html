@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas — Banco Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-deep: #0A0F1E;
+    --bg-card: #1A2035;
+    --bg-card-hover: #212A45;
+    --accent: #00D4AA;
+    --accent-dim: rgba(0, 212, 170, 0.12);
+    --text-primary: #F5F5F0;
+    --text-secondary: #6B7A99;
+    --negative: #FF6B6B;
+    --negative-dim: rgba(255, 107, 107, 0.12);
+    --border: rgba(255, 255, 255, 0.06);
+    --font-display: "Space Grotesk", sans-serif;
+    --font-body: "Inter", sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-deep);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── Lado esquerdo — branding ── */
+  .branding {
+    background: linear-gradient(135deg, #0F1A3A 0%, #0A1628 60%, #061020 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 48px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .branding::before {
+    content: "";
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,212,170,0.07) 0%, transparent 70%);
+    bottom: -100px;
+    right: -100px;
+    pointer-events: none;
+  }
+
+  .branding::after {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,212,170,0.05) 0%, transparent 70%);
+    top: 50px;
+    left: -80px;
+    pointer-events: none;
+  }
+
+  .brand-logo {
+    font-family: var(--font-display);
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    position: relative;
+    z-index: 1;
+  }
+
+  .brand-content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .brand-title {
+    font-family: var(--font-display);
+    font-size: 2.6rem;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+
+  .brand-title span {
+    color: var(--accent);
+  }
+
+  .brand-desc {
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    max-width: 340px;
+  }
+
+  .brand-features {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .brand-feature {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  .brand-feature-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  /* ── Lado direito — formulário ── */
+  .form-side {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+    background: var(--bg-deep);
+  }
+
+  .form-container {
+    width: 100%;
+    max-width: 400px;
+  }
+
+  /* Toggle Login / Cadastro */
+  .form-toggle {
+    display: flex;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 5px;
+    gap: 4px;
+    margin-bottom: 32px;
+  }
+
+  .toggle-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background 0.18s ease, color 0.18s ease;
+  }
+
+  .toggle-btn.active {
+    background: var(--accent);
+    color: #04261F;
+  }
+
+  /* Formulário */
+  .form-title {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+
+  .form-subtitle {
+    font-size: 0.88rem;
+    color: var(--text-secondary);
+    margin-bottom: 28px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 16px;
+  }
+
+  .form-label {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .form-input {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 0.92rem;
+    padding: 12px 14px;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.15s ease;
+  }
+
+  .form-input:focus {
+    border-color: var(--accent);
+  }
+
+  .form-input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.5;
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: var(--accent);
+    color: #04261F;
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+    transition: opacity 0.15s ease, transform 0.1s ease;
+  }
+
+  .btn-submit:hover { opacity: 0.88; }
+  .btn-submit:active { transform: scale(0.98); }
+  .btn-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .feedback {
+    font-size: 0.83rem;
+    font-weight: 500;
+    padding: 10px 14px;
+    border-radius: 9px;
+    margin-top: 12px;
+    display: none;
+  }
+
+  .feedback.sucesso {
+    background: var(--accent-dim);
+    color: var(--accent);
+    display: block;
+  }
+
+  .feedback.erro {
+    background: var(--negative-dim);
+    color: var(--negative);
+    display: block;
+  }
+
+  /* Painel de formulário */
+  .form-panel {
+    display: none;
+    animation: fadeUp 0.3s ease;
+  }
+
+  .form-panel.active {
+    display: block;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Responsivo */
+  @media (max-width: 768px) {
+    body { grid-template-columns: 1fr; }
+    .branding { display: none; }
+    .form-side { padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Branding -->
+<div class="branding">
+  <div class="brand-logo">Atlas</div>
+
+  <div class="brand-content">
+    <h1 class="brand-title">Sua conta,<br>seu <span>controle</span></h1>
+    <p class="brand-desc">Gerencie seu dinheiro com segurança e simplicidade. Transferências, depósitos e extrato em um só lugar.</p>
+  </div>
+
+  <div class="brand-features">
+    <div class="brand-feature">
+      <div class="brand-feature-dot"></div>
+      <span>Transferências instantâneas</span>
+    </div>
+    <div class="brand-feature">
+      <div class="brand-feature-dot"></div>
+      <span>Extrato completo em tempo real</span>
+    </div>
+    <div class="brand-feature">
+      <div class="brand-feature-dot"></div>
+      <span>Segurança com criptografia bcrypt</span>
+    </div>
+    <div class="brand-feature">
+      <div class="brand-feature-dot"></div>
+      <span>100% construído com Go + PostgreSQL</span>
+    </div>
+  </div>
+</div>
+
+<!-- Formulário -->
+<div class="form-side">
+  <div class="form-container">
+
+    <!-- Toggle -->
+    <div class="form-toggle">
+      <button class="toggle-btn active" id="btnLogin" onclick="alternar('login')">Entrar</button>
+      <button class="toggle-btn" id="btnCadastro" onclick="alternar('cadastro')">Criar conta</button>
+    </div>
+
+    <!-- Login -->
+    <div class="form-panel active" id="painelLogin">
+      <h2 class="form-title">Bem-vindo de volta</h2>
+      <p class="form-subtitle">Entre com suas credenciais para acessar sua conta</p>
+
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="loginEmail" placeholder="seu@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Senha</label>
+        <input type="password" class="form-input" id="loginSenha" placeholder="••••••••">
+      </div>
+
+      <button class="btn-submit" id="btnEntrar" onclick="fazerLogin()">Entrar na conta</button>
+      <div class="feedback" id="feedbackLogin"></div>
+    </div>
+
+    <!-- Cadastro -->
+    <div class="form-panel" id="painelCadastro">
+      <h2 class="form-title">Criar sua conta</h2>
+      <p class="form-subtitle">Preencha os dados abaixo para começar</p>
+
+      <div class="form-group">
+        <label class="form-label">Nome completo</label>
+        <input type="text" class="form-input" id="cadNome" placeholder="Seu nome completo">
+      </div>
+      <div class="form-group">
+        <label class="form-label">CPF</label>
+        <input type="text" class="form-input" id="cadCPF" placeholder="000.000.000-00" maxlength="14">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="cadEmail" placeholder="seu@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Senha</label>
+        <input type="password" class="form-input" id="cadSenha" placeholder="Mínimo 6 caracteres">
+      </div>
+
+      <button class="btn-submit" id="btnCriar" onclick="fazerCadastro()">Criar conta</button>
+      <div class="feedback" id="feedbackCadastro"></div>
+    </div>
+
+  </div>
+</div>
+
+<script src="login.js"></script>
+</body>
+</html>

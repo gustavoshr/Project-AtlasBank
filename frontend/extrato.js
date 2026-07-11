@@ -15,14 +15,16 @@ const botoesFiltro = document.querySelectorAll(".filtro-btn");
 const botaoTentarNovamente = document.getElementById("tentarNovamente");
  
 // Guarda os dados do extrato já carregados, para filtrar sem buscar de novo
+
 let extratoCompleto = [];
 let filtroAtivo = "todos";
  
-// ============================================
+
 // Funções utilitárias
-// ============================================
+
  
 // Formata um número para o padrão monetário brasileiro
+
 function formatarMoeda(valor) {
   return valor.toLocaleString("pt-BR", {
     style: "currency",
@@ -31,6 +33,7 @@ function formatarMoeda(valor) {
 }
  
 // Formata uma data ISO (vinda do banco) para "dd/mm/aaaa às HH:mm"
+
 function formatarData(dataIso) {
   const data = new Date(dataIso);
   const dataFormatada = data.toLocaleDateString("pt-BR");
@@ -42,12 +45,21 @@ function formatarData(dataIso) {
 }
  
 // Define se um tipo de transação é entrada ou saída de dinheiro
+
 function direcaoDaTransacao(tipo) {
   const tiposEntrada = ["Depósito", "Rendimento"];
   return tiposEntrada.includes(tipo) ? "entrada" : "saida";
 }
+
+// Adicionei a função de sair
+
+function sair() {
+  localStorage.removeItem("atlas_usuario");
+  window.location.href = "login.html";
+}
  
 // Escolhe um ícone simples por tipo de transação
+
 function iconePorTipo(tipo) {
   const icones = {
     "Depósito": "↓",
@@ -59,6 +71,7 @@ function iconePorTipo(tipo) {
 }
  
 // Exibe a data de hoje no cabeçalho da página
+
 function exibirDataAtual() {
   const hoje = new Date();
   const formatada = hoje.toLocaleDateString("pt-BR", {
@@ -69,24 +82,40 @@ function exibirDataAtual() {
   });
   elDataAtual.textContent = formatada.charAt(0).toUpperCase() + formatada.slice(1);
 }
- 
-// ============================================
-// Controle de estados visuais (loading / vazio / erro / lista)
-// ============================================
- 
+
+// loading / vazio / erro / lista)
+
 function mostrarApenas(estado) {
-  elLoading.hidden = estado !== "loading";
-  elVazio.hidden = estado !== "vazio";
-  elErro.hidden = estado !== "erro";
-  elLista.style.display = estado === "lista" ? "flex" : "none";
+  const loading = document.getElementById("loadingState");
+
+  // esconde tudo primeiro
+  loading.style.display = "none";
+  elVazio.style.display = "none";
+  elErro.style.display = "none";
+  elLista.style.display = "none";
+
+  // mostra só o estado atual
+  
+  if (estado === "loading") {
+    elLista.style.display = "flex";
+    loading.style.display = "flex";
+  } else if (estado === "lista") {
+    elLista.style.display = "flex";
+    loading.style.display = "none";
+  } else if (estado === "vazio") {
+    elVazio.style.display = "flex";
+  } else if (estado === "erro") {
+    elErro.style.display = "flex";
+  }
 }
  
-// ============================================
+
 // Renderização da lista
-// ============================================
- 
+
 function renderizarExtrato(transacoes) {
-  // limpa a lista antes de desenhar de novo
+
+// limpa a lista antes de desenhar de novo
+
   elLista.innerHTML = "";
  
   if (transacoes.length === 0) {
@@ -120,6 +149,7 @@ function renderizarExtrato(transacoes) {
 }
  
 // Calcula e exibe os totais de entrada, saída e saldo final do período
+
 function renderizarResumo(transacoes) {
   let entradas = 0;
   let saidas = 0;
@@ -136,8 +166,28 @@ function renderizarResumo(transacoes) {
   elTotalSaidas.textContent = formatarMoeda(saidas);
   elSaldoFinal.textContent = formatarMoeda(entradas - saidas);
 }
+
+// busca extrato com o id real
+
+async function carregarContaSelect() {
+  const usuario = JSON.parse(localStorage.getItem("atlas_usuario") || "{}");
+  const usuarioID = usuario.id || 1;
+
+  try {
+    const res = await fetch(`${API_URL}/contas/usuario?usuario_id=${usuarioID}`);
+    const conta = await res.json();
+
+    const select = document.getElementById("contaSelect");
+    select.innerHTML = `<option value="${conta.id}">Agência ${conta.numero_agencia} · Conta ${conta.numero_conta}</option>`;
+
+    await buscarExtrato();
+  } catch {
+    console.error("Erro ao carregar conta");
+  }
+}
  
 // Aplica o filtro selecionado (todos / entrada / saida) sobre os dados já carregados
+
 function aplicarFiltro() {
   let transacoesFiltradas = extratoCompleto;
  
@@ -150,9 +200,9 @@ function aplicarFiltro() {
   renderizarExtrato(transacoesFiltradas);
 }
  
-// ============================================
+
 // Busca dos dados na API
-// ============================================
+
  
 async function buscarExtrato() {
   mostrarApenas("loading");
@@ -169,6 +219,7 @@ async function buscarExtrato() {
     const dados = await resposta.json();
  
     // a API pode retornar null quando não há transações
+
     extratoCompleto = dados || [];
  
     renderizarResumo(extratoCompleto);
@@ -181,9 +232,8 @@ async function buscarExtrato() {
   }
 }
  
-// ============================================
+
 // Eventos
-// ============================================
  
 botoesFiltro.forEach((botao) => {
   botao.addEventListener("click", () => {
@@ -197,9 +247,9 @@ botoesFiltro.forEach((botao) => {
 botaoTentarNovamente.addEventListener("click", buscarExtrato);
 elContaSelect.addEventListener("change", buscarExtrato);
  
-// ============================================
+
 // Inicialização
-// ============================================
+
  
 exibirDataAtual();
-buscarExtrato();
+carregarContaSelect();

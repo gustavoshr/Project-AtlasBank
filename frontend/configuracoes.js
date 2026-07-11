@@ -1,14 +1,14 @@
-// ============================================
+
 // configuracoes.js
-// ============================================
+
 
 const API_URL = "http://localhost:8080";
 const USUARIO_ID = 1;
 const CONTA_ID = 1;
 
-// ============================================
+
 // Traduções
-// ============================================
+
 
 const i18n = {
   pt: {
@@ -102,8 +102,6 @@ function aplicarIdioma() {
   const prefSubs = document.querySelectorAll(".pref-sub");
   prefLabels[0].textContent = t.idioma;
   prefSubs[0].textContent = t.idiomaSub;
-  prefLabels[1].textContent = t.temaEscuro;
-  prefSubs[1].textContent = t.temaEscuroSub;
   prefLabels[2].textContent = t.notifTrans;
   prefSubs[2].textContent = t.notifTransSub;
 
@@ -119,9 +117,9 @@ function aplicarIdioma() {
   document.getElementById("idiomaSelect").value = lang;
 }
 
-// ============================================
+
 // Carregar dados do usuário
-// ============================================
+
 
 async function carregarUsuario() {
   try {
@@ -137,21 +135,36 @@ async function carregarUsuario() {
   }
 }
 
-// ============================================
+// Adicionei a função de sair
+function sair() {
+  localStorage.removeItem("atlas_usuario");
+  window.location.href = "login.html";
+}
+
+
 // Carregar dados da conta
-// ============================================
+
 
 async function carregarConta() {
   try {
-    const res = await fetch(`${API_URL}/extrato?conta_id=${CONTA_ID}`);
-    const transacoes = await res.json() || [];
+    const usuario = JSON.parse(localStorage.getItem("atlas_usuario") || "{}");
+    const usuarioID = usuario.id || 1;
+
+    const res = await fetch(`${API_URL}/contas/usuario?usuario_id=${usuarioID}`);
+    const conta = await res.json();
+
+    // busca saldo pelo extrato
+    const resExtrato = await fetch(`${API_URL}/extrato?conta_id=${conta.id}`);
+    const transacoes = await resExtrato.json() || [];
     let saldo = 0;
     transacoes.forEach(t => {
       if (["Depósito", "Rendimento"].includes(t.tipo)) saldo += t.valor;
       else saldo -= t.valor;
     });
-    document.getElementById("dadoAgencia").textContent = "123";
-    document.getElementById("dadoConta").textContent = "456";
+
+    document.getElementById("dadoAgencia").textContent = conta.numero_agencia;
+    document.getElementById("dadoConta").textContent = conta.numero_conta;
+    document.getElementById("dadoTipo").textContent = conta.tipo === "corrente" ? "Corrente" : "Poupança";
     document.getElementById("dadoSaldo").textContent = saldo.toLocaleString("pt-BR", {
       style: "currency", currency: "BRL"
     });
@@ -160,9 +173,9 @@ async function carregarConta() {
   }
 }
 
-// ============================================
+
 // Salvar dados pessoais
-// ============================================
+
 
 async function salvarDadosPessoais() {
   const lang = getLang();
@@ -203,9 +216,9 @@ async function salvarDadosPessoais() {
   }
 }
 
-// ============================================
+
 // Preferências
-// ============================================
+
 
 function carregarPreferencias() {
   const prefs = JSON.parse(localStorage.getItem("atlas_prefs") || "{}");
@@ -222,9 +235,9 @@ function salvarPreferencias() {
   aplicarIdioma();
 }
 
-// ============================================
+
 // Init
-// ============================================
+
 
 carregarUsuario();
 carregarConta();
